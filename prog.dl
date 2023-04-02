@@ -1,0 +1,12 @@
+programa soma inicio
+    inteiro a;
+    inteiro b;
+    a = leia();
+    b = leia();
+    /// ve se a eh maior b
+    se (a > b)
+        escreva(1.)
+    senao
+        escreva(0)
+
+fim.

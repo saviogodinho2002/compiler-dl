@@ -20,6 +20,16 @@ public class Lexer {
         keyWord.put("programa",Tag.PROGRAM);
         keyWord.put("inicio",Tag.BEGIN);
         keyWord.put("fim", Tag.END);
+
+        keyWord.put("inteiro", Tag.INT);
+        keyWord.put("real",Tag.REAL);
+        keyWord.put("booleano",Tag.BOOL);
+        keyWord.put("falso",Tag.FALSE);
+        keyWord.put("verdadeiro",Tag.TRUE);
+        keyWord.put("leia",Tag.READ);
+        keyWord.put("escreva",Tag.WRITE);
+        keyWord.put("se",Tag.IF);
+        keyWord.put("senao",Tag.ELSE);
         try {
             this.reader = new BufferedReader(new FileReader(file));
 
@@ -42,14 +52,6 @@ public class Lexer {
         while (isWhiteSpace(peek))
             this.nextChar();
         switch (peek) {
-             case '=' -> {
-                this.nextChar();
-                if (peek == '=') {
-                    nextChar();
-                    return new Token(Tag.EQ, "==");
-                }
-                return new Token(Tag.ASSIGN, "=");
-            }
             case '+' -> {
                 this.nextChar();
                 return new Token(Tag.SUM, "+");
@@ -62,9 +64,42 @@ public class Lexer {
                 this.nextChar();
                 return new Token(Tag.MUL, "*");
             }
+            case '/'->{
+                nextChar();
+                if(peek == '/'){
+
+                    do{
+                        nextChar();
+                    }while (peek != '\n' && peek != '\r' );
+                    return nextToken();
+                }
+                return new Token(Tag.DIV,"/");
+
+            }
+
             case '|' -> {
                 this.nextChar();
                 return new Token(Tag.OR, "|");
+            }
+            case '&' -> {
+                this.nextChar();
+                return new Token(Tag.AND, "&");
+            }
+            case '=' -> {
+                this.nextChar();
+                if (peek == '=') {
+                    nextChar();
+                    return new Token(Tag.EQ, "==");
+                }
+                return new Token(Tag.ASSIGN, "=");
+            }
+            case '!' -> {
+                this.nextChar();
+                if (peek == '=') {
+                    nextChar();
+                    return new Token(Tag.NE, "!=");
+                }
+                return new Token(Tag.NOT, "!");
             }
             case '<' -> {
                 nextChar();
@@ -82,15 +117,21 @@ public class Lexer {
                 }
                 return new Token(Tag.GT, ">");
             }
-            case '/'->{
-                 nextChar();
-                 if(peek == '/'){
-
-                     do{
-                         nextChar();
-                     }while (peek != '\n' && peek == '\r    ' );
-                 }
-
+            case '(' -> {
+                nextChar();
+                return new Token(Tag.LPAREN, "(");
+            }
+            case ')' -> {
+                nextChar();
+                return new Token(Tag.RPAREN, ")");
+            }
+            case ',' -> {
+                nextChar();
+                return new Token(Tag.COMMA, ",");
+            }
+            case ';' -> {
+                nextChar();
+                return new Token(Tag.SEMI, ";");
             }
             case EOF_CHAR -> {
                 return new Token(Tag.EOF, "");
@@ -98,10 +139,12 @@ public class Lexer {
             default -> {
                  if(Character.isDigit(peek)){
                      StringBuilder builderNum = new StringBuilder();
+
                      do{
                          builderNum.append(peek);
                          nextChar();
                      }while (Character.isDigit(peek));
+
                      if(peek == '.'){
                          do{
                              builderNum.append(peek);
@@ -113,8 +156,8 @@ public class Lexer {
                  }
             }
         }
-        StringBuilder builderId = new StringBuilder();
         if(Character.isJavaIdentifierStart(peek)){
+            StringBuilder builderId = new StringBuilder();
             do{
                 builderId.append(peek);
                 nextChar();
